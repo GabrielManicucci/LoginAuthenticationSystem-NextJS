@@ -3,16 +3,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FcGoogle } from "react-icons/fc";
-import Link from "next/link";
+import { Auth } from "@/utils/auth";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(8, { message: "Must be 8 or more characters long" }),
 });
 
-type UserSchema = z.infer<typeof schema>;
+export type UserSchema = z.infer<typeof schema>;
 
-export default function LoginScreen() {
+export default function LoginScreen({ login, redirect_url }: Auth) {
   const {
     register,
     handleSubmit,
@@ -20,20 +21,15 @@ export default function LoginScreen() {
   } = useForm<UserSchema>({
     resolver: zodResolver(schema),
   });
+  const router = useRouter();
 
-  async function loginUser(formData: UserSchema) {
-    // console.log(formData);
-    // const allow = await auth.signin(formData.email, formData.password);
-    // router.push("/private/profile");
-    // const res = await fetch("http://localhost:5555/user/session", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
-    // const data = await res.json();
-    // console.log(data);
+  async function loginUser({ email, password }: UserSchema) {
+    const data = await login({ email, password });
+    if (redirect_url) {
+      router.push(`${redirect_url}`);
+    } else {
+      router.push("/");
+    }
   }
 
   return (

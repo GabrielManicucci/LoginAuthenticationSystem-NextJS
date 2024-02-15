@@ -19,7 +19,7 @@ export default function SessionLayout({
         <p className="pb-10">
           <Link
             className={clsx({
-              "border-b": pathname !== "/session/login",
+              "border-b-2 border-gray-400": pathname !== "/session/login",
             })}
             href={"/session/login"}
           >
@@ -28,7 +28,7 @@ export default function SessionLayout({
           or{" "}
           <Link
             className={clsx({
-              "border-b": pathname !== "/session/signup",
+              "border-b-2 border-gray-400": pathname !== "/session/signup",
             })}
             href={"/session/signup"}
           >

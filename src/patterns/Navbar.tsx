@@ -1,9 +1,8 @@
-"use client";
-
 import { IoIosSearch } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import Link from "next/link";
-import { MdLogin } from "react-icons/md";
+import { MdLogin, MdLogout } from "react-icons/md";
+import { cookies } from "next/headers";
 
 import {
   DropdownMenu,
@@ -16,6 +15,10 @@ import {
 import { ModeToggle } from "@/components/ModeToggle";
 
 export default function NavBar() {
+  let session = false;
+  const cookie = cookies().get("session");
+  if (cookie) session = true;
+
   return (
     <nav className="w-full h-20 flex items-center justify-between px-6 border-b border-gray-500">
       <Link href={"/"}>
@@ -23,7 +26,6 @@ export default function NavBar() {
       </Link>
 
       <div className="flex items-center">
-        {/* <Switch onClick={() => setTheme("dark")} /> */}
         <ModeToggle />
         <IoIosSearch className="mx-3" size={24} />
         <DropdownMenu>
@@ -34,21 +36,31 @@ export default function NavBar() {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link href={"/"}>
-              <DropdownMenuItem>Home</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer p-2">
+                Home
+              </DropdownMenuItem>
             </Link>
             <Link href={"/private/profile"}>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer p-2">
+                Profile
+              </DropdownMenuItem>
             </Link>
             <Link href={"/session/login"}>
-              <DropdownMenuItem className="flex">
-                <span className="mr-4">Login</span>
+              <DropdownMenuItem className="flex cursor-pointer p-2">
+                <span className="mr-6">Login</span>
                 <MdLogin size={20} />
               </DropdownMenuItem>
             </Link>
             <Link href={"/session/signup"}>
-              <DropdownMenuItem className="flex">
+              <DropdownMenuItem className="flex cursor-pointer p-2">
                 <span className="mr-4">Signup</span>
                 <MdLogin size={20} />
+              </DropdownMenuItem>
+            </Link>
+            <Link href={"/api/auth/logout"} className={session ? "" : "hidden"}>
+              <DropdownMenuItem className="flex cursor-pointer p-2">
+                <span className="mr-5">Logout</span>
+                <MdLogout size={20} />
               </DropdownMenuItem>
             </Link>
           </DropdownMenuContent>

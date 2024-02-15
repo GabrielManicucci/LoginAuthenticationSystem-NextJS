@@ -1,12 +1,27 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { string } from "zod";
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  return NextResponse.redirect(new URL("/home", request.url));
+  // console.log(request.nextUrl.href);
+  const path = request.nextUrl.href;
+  const cookie = request.cookies.get("session");
+
+  if (!cookie) {
+    const redirectURL = new URL(
+      `/session/login?redirect_url=${path}`,
+      request.url
+    );
+    return NextResponse.redirect(redirectURL);
+  }
+  // const redirectURL = new URL(
+  //   `/session/login?redirect_url=${path}`,
+  //   request.url
+  // );
+  return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: "/about/:path*",
+  matcher: ["/private/profile"],
 };

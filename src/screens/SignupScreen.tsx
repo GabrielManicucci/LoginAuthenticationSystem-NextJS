@@ -21,7 +21,7 @@ const schema = z.object({
   password: z.string().min(8, { message: "Must be 8 or more characters long" }),
 });
 
-type UserSchema = z.infer<typeof schema>;
+export type UserSchema = z.infer<typeof schema>;
 
 export default function SignupScreen() {
   const {
