@@ -26,9 +26,10 @@ export default function LoginScreen({ login, redirect_url }: Auth) {
   async function loginUser({ email, password }: UserSchema) {
     const data = await login({ email, password });
     if (redirect_url) {
-      router.push(`${redirect_url}`);
+      // router.push(`${redirect_url}`);
+      location.replace(`${redirect_url}`);
     } else {
-      router.push("/");
+      location.replace("/");
     }
   }
 

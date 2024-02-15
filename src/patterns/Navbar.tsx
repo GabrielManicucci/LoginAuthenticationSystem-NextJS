@@ -1,8 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
 import { IoIosSearch } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import Link from "next/link";
 import { MdLogin, MdLogout } from "react-icons/md";
-import { cookies } from "next/headers";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { useRouter } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -13,11 +16,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/ModeToggle";
+import axios from "axios";
 
-export default function NavBar() {
-  let session = false;
-  const cookie = cookies().get("session");
-  if (cookie) session = true;
+type Session = {
+  session: RequestCookie | null;
+};
+
+export default function NavBar({ session }: Session) {
+  const router = useRouter();
+
+  async function logout() {
+    const response = await axios.get("/api/auth/logout");
+    location.replace("/");
+  }
 
   return (
     <nav className="w-full h-20 flex items-center justify-between px-6 border-b border-gray-500">
@@ -45,24 +56,24 @@ export default function NavBar() {
                 Profile
               </DropdownMenuItem>
             </Link>
-            <Link href={"/session/login"}>
+            <Link href={"/session/login"} className={session ? "hidden" : ""}>
               <DropdownMenuItem className="flex cursor-pointer p-2">
                 <span className="mr-6">Login</span>
                 <MdLogin size={20} />
               </DropdownMenuItem>
             </Link>
-            <Link href={"/session/signup"}>
+            <Link href={"/session/signup"} className={session ? "hidden" : ""}>
               <DropdownMenuItem className="flex cursor-pointer p-2">
                 <span className="mr-4">Signup</span>
                 <MdLogin size={20} />
               </DropdownMenuItem>
             </Link>
-            <Link href={"/api/auth/logout"} className={session ? "" : "hidden"}>
+            <button onClick={logout} className={session ? "" : "hidden"}>
               <DropdownMenuItem className="flex cursor-pointer p-2">
                 <span className="mr-5">Logout</span>
                 <MdLogout size={20} />
               </DropdownMenuItem>
-            </Link>
+            </button>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
