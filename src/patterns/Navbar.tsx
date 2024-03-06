@@ -28,10 +28,11 @@ export default function NavBar({ session }: Session) {
   async function logout() {
     const response = await axios.get("/api/auth/logout");
     location.replace("/");
+    // router.replace("/");
   }
 
   return (
-    <nav className="w-full h-20 flex items-center justify-between px-6 border-b border-gray-500">
+    <nav className="w-full h-24 flex items-center justify-between px-6 border-b border-gray-500">
       <Link href={"/"}>
         <h1 className="text-2xl font-bold">Ecomm</h1>
       </Link>
@@ -68,7 +69,7 @@ export default function NavBar({ session }: Session) {
                 <MdLogin size={20} />
               </DropdownMenuItem>
             </Link>
-            <button onClick={logout} className={session ? "" : "hidden"}>
+            <button onClick={logout} className={session ? "w-full" : "hidden"}>
               <DropdownMenuItem className="flex cursor-pointer p-2">
                 <span className="mr-5">Logout</span>
                 <MdLogout size={20} />
@@ -80,3 +81,6 @@ export default function NavBar({ session }: Session) {
     </nav>
   );
 }
+
+// session ? "hidden" : ""
+// session ? "w-full" : "hidden"

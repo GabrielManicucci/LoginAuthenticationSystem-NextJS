@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FcGoogle } from "react-icons/fc";
-import { Auth } from "@/utils/auth";
+import { Login } from "@/utils/auth";
 import { useRouter } from "next/navigation";
 
 const schema = z.object({
@@ -13,7 +13,7 @@ const schema = z.object({
 
 export type UserSchema = z.infer<typeof schema>;
 
-export default function LoginScreen({ login, redirect_url }: Auth) {
+export default function LoginScreen({ login, redirect_url }: Login) {
   const {
     register,
     handleSubmit,
@@ -26,7 +26,7 @@ export default function LoginScreen({ login, redirect_url }: Auth) {
   async function loginUser({ email, password }: UserSchema) {
     const data = await login({ email, password });
     if (redirect_url) {
-      // router.push(`${redirect_url}`);
+      // router.replace(`${redirect_url}`);
       location.replace(`${redirect_url}`);
     } else {
       location.replace("/");

@@ -4,6 +4,8 @@ import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { ChangeEvent, useState } from "react";
+import { ErrorType, Signup } from "@/utils/auth";
 
 const schema = z.object({
   name: z
@@ -18,12 +20,17 @@ const schema = z.object({
         .join(" ")
     ),
   email: z.string().email({ message: "Invalid email address" }),
+  cpf: z.string().refine((value) => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value), {
+    message: "CPF inválido",
+  }),
   password: z.string().min(8, { message: "Must be 8 or more characters long" }),
 });
 
 export type UserSchema = z.infer<typeof schema>;
 
-export default function SignupScreen() {
+export default function SignupScreen({ signup }: Signup) {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -32,7 +39,30 @@ export default function SignupScreen() {
     resolver: zodResolver(schema),
   });
 
-  async function signup(formData: object) {
+  const handleChange = (value: string): string => {
+    let cpfValue: string = value;
+    cpfValue = cpfValue.replace(/\D/g, ""); // Remove caracteres não numéricos
+    cpfValue = cpfValue.replace(/(\d{3})(\d)/, "$1.$2"); // Insere o primeiro ponto
+    cpfValue = cpfValue.replace(/(\d{3})(\d)/, "$1.$2"); // Insere o segundo ponto
+    cpfValue = cpfValue.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Insere o traço
+
+    return cpfValue;
+  };
+
+  async function signupUser({ name, cpf, email, password }: UserSchema) {
+    setErrorMessage("");
+
+    try {
+      const response = await signup({ name, cpf, email, password });
+      console.log(response);
+
+      // location.replace("/session/login");
+    } catch (err: any) {
+      const { response } = err as ErrorType;
+      console.log(response?.data.error);
+
+      setErrorMessage(response?.data.error || "Houve um erro ao criar conta");
+    }
     // const res = await fetch("http://localhost:5555/user/signup", {
     //   method: "POST",
     //   headers: {
@@ -51,7 +81,7 @@ export default function SignupScreen() {
         <form
           className="px-5 flex flex-col justify-center items-center"
           action=""
-          onSubmit={handleSubmit(signup)}
+          onSubmit={handleSubmit(signupUser)}
         >
           <div className="flex flex-col w-11/12">
             <div className="flex flex-col mb-3">
@@ -77,6 +107,22 @@ export default function SignupScreen() {
               {errors.email && (
                 <span className="text-red-500 text-sm">
                   {errors.email.message}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col mb-3">
+              <input
+                className="p-2 mb-1 bg-stone-700 rounded-md"
+                type="text"
+                placeholder="CPF: 000.000.000-00"
+                {...register("cpf")}
+                onChange={(e) => {
+                  e.target.value = handleChange(e.target.value);
+                }}
+              />
+              {errors.cpf && (
+                <span className="text-red-500 text-sm">
+                  {errors.cpf.message}
                 </span>
               )}
             </div>
