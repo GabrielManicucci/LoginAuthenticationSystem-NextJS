@@ -3,33 +3,40 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FcGoogle } from "react-icons/fc";
-import { Login } from "@/utils/auth";
+import { ErrorType, Login } from "@/utils/auth";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { loginSchema } from "@/schemas/auth";
 
-const schema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(8, { message: "Must be 8 or more characters long" }),
-});
-
-export type UserSchema = z.infer<typeof schema>;
+export type UserSchema = z.infer<typeof loginSchema>;
 
 export default function LoginScreen({ login, redirect_url }: Login) {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<UserSchema>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(loginSchema),
   });
   const router = useRouter();
 
   async function loginUser({ email, password }: UserSchema) {
-    const data = await login({ email, password });
-    if (redirect_url) {
-      // router.replace(`${redirect_url}`);
-      location.replace(`${redirect_url}`);
-    } else {
-      location.replace("/");
+    setErrorMessage("");
+
+    try {
+      const data = await login({ email, password });
+
+      if (redirect_url) {
+        // router.replace(`${redirect_url}`);
+        location.replace(`${redirect_url}`);
+      } else {
+        location.replace("/");
+      }
+    } catch (error) {
+      setErrorMessage("Email não encontrado ou senha inválida");
+      // console.log(error);
     }
   }
 
@@ -74,8 +81,16 @@ export default function LoginScreen({ login, redirect_url }: Login) {
             <input
               type="submit"
               value="Login"
-              className="p-3 bg-gray-200 rounded-md mt-5 text-gray-950 font-medium"
+              className="p-3 hover:brightness-75 bg-gray-200 rounded-md mt-5 text-gray-950 font-medium transition-all"
             />
+            {errorMessage && (
+              <div
+                onClick={() => setErrorMessage("")}
+                className="p-2 mt-4 border rounded-md border-red-600 text-red-950 bg-red-400 text-sm"
+              >
+                <p>{errorMessage}</p>
+              </div>
+            )}
           </div>
           <div className="my-5 flex items-center">
             <div className="border-b border-gray-100 opacity-60 my-5 w-16" />

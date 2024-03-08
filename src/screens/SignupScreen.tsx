@@ -6,27 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ChangeEvent, useState } from "react";
 import { ErrorType, Signup } from "@/utils/auth";
+import { signupSchema } from "@/schemas/auth";
 
-const schema = z.object({
-  name: z
-    .string()
-    .toLowerCase()
-    .nonempty({ message: "O nome é obrigatório" })
-    .transform((name) =>
-      name
-        .trim()
-        .split(" ")
-        .map((word) => word[0].toLocaleUpperCase().concat(word.substring(1)))
-        .join(" ")
-    ),
-  email: z.string().email({ message: "Invalid email address" }),
-  cpf: z.string().refine((value) => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value), {
-    message: "CPF inválido",
-  }),
-  password: z.string().min(8, { message: "Must be 8 or more characters long" }),
-});
-
-export type UserSchema = z.infer<typeof schema>;
+export type UserSchema = z.infer<typeof signupSchema>;
 
 export default function SignupScreen({ signup }: Signup) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -36,7 +18,7 @@ export default function SignupScreen({ signup }: Signup) {
     handleSubmit,
     formState: { errors },
   } = useForm<UserSchema>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(signupSchema),
   });
 
   const handleChange = (value: string): string => {
@@ -59,19 +41,11 @@ export default function SignupScreen({ signup }: Signup) {
       // location.replace("/session/login");
     } catch (err: any) {
       const { response } = err as ErrorType;
+      console.log(err);
       console.log(response?.data.error);
 
       setErrorMessage(response?.data.error || "Houve um erro ao criar conta");
     }
-    // const res = await fetch("http://localhost:5555/user/signup", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
-    // const data = await res.json()
-    // console.log(`${res.statusText} - ${res.status}`);
   }
 
   return (
@@ -84,7 +58,7 @@ export default function SignupScreen({ signup }: Signup) {
           onSubmit={handleSubmit(signupUser)}
         >
           <div className="flex flex-col w-11/12">
-            <div className="flex flex-col mb-3">
+            <div className="flex flex-col mb-2">
               <input
                 className="p-2 mb-1 bg-stone-700 rounded-md"
                 type="text"
@@ -97,7 +71,7 @@ export default function SignupScreen({ signup }: Signup) {
                 </span>
               )}
             </div>
-            <div className="flex flex-col mb-3">
+            <div className="flex flex-col mb-2">
               <input
                 className="p-2 mb-1 bg-stone-700 rounded-md"
                 type="text"
@@ -110,7 +84,7 @@ export default function SignupScreen({ signup }: Signup) {
                 </span>
               )}
             </div>
-            <div className="flex flex-col mb-3">
+            <div className="flex flex-col mb-2">
               <input
                 className="p-2 mb-1 bg-stone-700 rounded-md"
                 type="text"
@@ -145,6 +119,15 @@ export default function SignupScreen({ signup }: Signup) {
               value="Signup"
               className="p-3 bg-gray-200 rounded-md mt-5 text-gray-950 font-medium"
             />
+
+            {errorMessage && (
+              <div
+                onClick={() => setErrorMessage("")}
+                className="p-2 mt-4 border rounded-mdborder-red-600 text-red-950 bg-red-400 text-sm rounded-md border-red-400"
+              >
+                <p>{errorMessage}</p>
+              </div>
+            )}
           </div>
           <div className="my-5 flex items-center">
             <div className="border-b border-gray-100 opacity-60 my-5 w-16" />

@@ -1,3 +1,6 @@
+import { DialogComponentEmail } from "@/components/DialogComponentEmail";
+import { DialogComponentPassword } from "@/components/DialogComponentPassword";
+
 export default function ProfileScreen() {
   return (
     <div className="flex flex-col items-center py-16 px-5">
@@ -8,51 +11,45 @@ export default function ProfileScreen() {
             Update your profile details below
           </p>
         </div>
-        <div className="mb-4 mt-8">
-          <button className="border border-gray-50 p-3 mr-1 text-sm rounded-md hover:bg-slate-50 hover:text-slate-950 transition-all">
-            Update email
-          </button>
-          <button className="border border-gray-50 p-3 ml-1 text-sm rounded-md hover:bg-slate-50 hover:text-slate-950 transition-all">
-            Update password
-          </button>
+        <div className="mb-3 mt-8 flex">
+          <div className="mr-2">
+            <DialogComponentEmail />
+          </div>
+          <DialogComponentPassword />
         </div>
         <form action="" className="max-w-[496px]">
           <input
             type="text"
             name=""
             id=""
-            value={""}
             placeholder="Name"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700"
+            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
           />
           <input
             type="text"
             name=""
             id=""
-            value={""}
             placeholder="youremail@email.com"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700"
+            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
           />
           <input
             type="text"
             name=""
             id=""
-            value={""}
             placeholder="CPF"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700"
+            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
           />
           <input
             type="text"
             name=""
             id=""
-            value={""}
             placeholder="password"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700"
+            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
           />
           <input
             type="submit"
             value={"update"}
-            className="p-3 w-full border border-gray-400 rounded-md transition-all bg-gray-200"
+            className="p-3 w-full borde rounded-md transition-all hover:brightness-75 bg-gray-300 text-gray-950"
           />
         </form>
       </div>

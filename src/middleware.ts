@@ -5,7 +5,7 @@ import { string } from "zod";
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.href;
-  console.log(path);
+  // console.log(path);
   const cookie = request.cookies.get("session");
 
   if (!cookie) {
