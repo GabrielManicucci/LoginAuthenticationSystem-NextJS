@@ -1,10 +1,8 @@
 "use client";
-import {
-  DialogComponentEmail,
+import DialogComponentEmail, {
   UpdateEmailSchema,
 } from "@/components/DialogComponentEmail";
-import {
-  DialogComponentPassword,
+import DialogComponentPassword, {
   UpdatePasswordSchema,
 } from "@/components/DialogComponentPassword";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -39,7 +37,10 @@ export default function ProfileScreen({
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    getUserData();
+    async function fetchUser() {
+      const userData = await getUserData();
+    }
+    fetchUser();
   }, []);
 
   async function getUserData() {

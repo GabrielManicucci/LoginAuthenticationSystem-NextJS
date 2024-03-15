@@ -22,7 +22,7 @@ export type Props = {
   errorMessageHandle: (data: string) => void;
 };
 
-export function DialogComponentEmail({
+export default function DialogComponentEmail({
   updateEmailHandle,
   errorMessage,
   errorMessageHandle,

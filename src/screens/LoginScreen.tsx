@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FcGoogle } from "react-icons/fc";
 import { Login } from "@/utils/auth";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loginSchema } from "@/schemas/auth";
 
@@ -20,7 +19,6 @@ export default function LoginScreen({ login, redirect_url }: Login) {
   } = useForm<UserSchema>({
     resolver: zodResolver(loginSchema),
   });
-  const router = useRouter();
 
   async function loginUser({ email, password }: UserSchema) {
     setErrorMessage("");

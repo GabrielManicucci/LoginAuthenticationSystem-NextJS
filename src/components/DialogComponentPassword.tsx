@@ -22,7 +22,7 @@ export type Props = {
 
 export type UpdatePasswordSchema = z.infer<typeof updatePasswordSchema>;
 
-export function DialogComponentPassword({
+export default function DialogComponentPassword({
   errorMessage,
   errorMessageHandle,
   updatePasswordHandle,
