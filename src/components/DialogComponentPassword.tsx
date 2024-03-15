@@ -34,6 +34,7 @@ export function DialogComponentPassword({
   } = useForm<UpdatePasswordSchema>({
     resolver: zodResolver(updatePasswordSchema),
   });
+
   return (
     <Dialog>
       <DialogTrigger asChild>

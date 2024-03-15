@@ -7,8 +7,6 @@ import {
   DialogComponentPassword,
   UpdatePasswordSchema,
 } from "@/components/DialogComponentPassword";
-import { updatePasswordSchema } from "@/schemas/updates";
-import { ErrorType } from "@/utils/auth";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaLock } from "react-icons/fa6";
 

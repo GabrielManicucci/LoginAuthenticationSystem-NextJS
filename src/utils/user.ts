@@ -2,7 +2,6 @@
 import { UpdateEmailSchema } from "@/components/DialogComponentEmail"
 import { UpdatePasswordSchema } from "@/components/DialogComponentPassword"
 import { api, axios } from "@/lib/axios"
-import { User } from "@/screens/ProfileScreen"
 
 export const user = () => ({
     getUser: async () => {

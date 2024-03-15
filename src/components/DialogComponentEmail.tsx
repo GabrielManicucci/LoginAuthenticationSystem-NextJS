@@ -9,9 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { updateEmailSchema } from "@/schemas/updates";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Divide } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { DEFAULT_MAX_VERSION } from "tls";
 import { z } from "zod";
 
 export type UpdateEmailSchema = z.infer<typeof updateEmailSchema>;

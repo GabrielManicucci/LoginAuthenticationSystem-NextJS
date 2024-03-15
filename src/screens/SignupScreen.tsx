@@ -1,10 +1,9 @@
 "use client";
-import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { ErrorType, Signup } from "@/utils/auth";
 import { signupSchema } from "@/schemas/auth";
 

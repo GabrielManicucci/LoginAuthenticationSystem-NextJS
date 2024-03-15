@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FcGoogle } from "react-icons/fc";
-import { ErrorType, Login } from "@/utils/auth";
+import { Login } from "@/utils/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loginSchema } from "@/schemas/auth";
