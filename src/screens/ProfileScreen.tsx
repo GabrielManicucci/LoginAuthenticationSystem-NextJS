@@ -1,10 +1,98 @@
-import { DialogComponentEmail } from "@/components/DialogComponentEmail";
-import { DialogComponentPassword } from "@/components/DialogComponentPassword";
+"use client";
+import {
+  DialogComponentEmail,
+  UpdateEmailSchema,
+} from "@/components/DialogComponentEmail";
+import {
+  DialogComponentPassword,
+  UpdatePasswordSchema,
+} from "@/components/DialogComponentPassword";
+import { updatePasswordSchema } from "@/schemas/updates";
+import { ErrorType } from "@/utils/auth";
+import { ChangeEvent, useEffect, useState } from "react";
+import { FaLock } from "react-icons/fa6";
 
-export default function ProfileScreen() {
+export type User = {
+  name: string;
+  email: string;
+  cpf: string;
+  password: string;
+};
+
+type ProfileScreenProps = {
+  getUser: () => Promise<object | unknown>;
+  updateEmail: (emailForm: UpdateEmailSchema) => Promise<object | unknown>;
+  updatePassword: (
+    passwordForm: UpdatePasswordSchema
+  ) => Promise<object | unknown>;
+};
+
+export default function ProfileScreen({
+  getUser,
+  updateEmail,
+  updatePassword,
+}: ProfileScreenProps) {
+  const [user, setUser] = useState<User>({
+    name: "",
+    email: "",
+    cpf: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  async function getUserData() {
+    const response: any = await getUser();
+    setUser(response.data);
+  }
+
+  const updateEmailHandle = async (emailForm: UpdateEmailSchema) => {
+    const response: any = await updateEmail(emailForm);
+    if (response.data.error) {
+      setErrorMessage(response.data.error);
+    } else {
+      const { email }: User = response.data;
+      setUser((prevData) => ({
+        ...prevData,
+        email,
+      }));
+      location.reload();
+    }
+  };
+
+  const updatePasswordHandle = async (passwordForm: UpdatePasswordSchema) => {
+    const response: any = await updatePassword(passwordForm);
+    if (response.data.error) {
+      setErrorMessage(response.data.error);
+    } else {
+      const { email }: User = response.data;
+      setUser((prevData) => ({
+        ...prevData,
+        email,
+      }));
+      location.reload();
+    }
+  };
+
+  function updateName(event: ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target;
+    setUser((prevData) => ({
+      ...prevData,
+      name: value,
+    }));
+    console.log(user);
+  }
+
+  function errorMessageHandler(data: string) {
+    setErrorMessage(data);
+  }
+
   return (
     <div className="flex flex-col items-center py-16 px-5">
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full sm:max-w-lg">
         <div>
           <h1 className="text-xl font-medium">Profile Screen</h1>
           <p className="opacity-80 text-sm">
@@ -13,39 +101,56 @@ export default function ProfileScreen() {
         </div>
         <div className="mb-3 mt-8 flex">
           <div className="mr-2">
-            <DialogComponentEmail />
+            <DialogComponentEmail
+              updateEmailHandle={updateEmailHandle}
+              errorMessage={errorMessage}
+              errorMessageHandle={errorMessageHandler}
+            />
           </div>
-          <DialogComponentPassword />
+          <DialogComponentPassword
+            errorMessageHandle={errorMessageHandler}
+            errorMessage={errorMessage}
+            updatePasswordHandle={updatePasswordHandle}
+          />
         </div>
-        <form action="" className="max-w-[496px]">
-          <input
-            type="text"
-            name=""
-            id=""
-            placeholder="Name"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
-          />
-          <input
-            type="text"
-            name=""
-            id=""
-            placeholder="youremail@email.com"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
-          />
-          <input
-            type="text"
-            name=""
-            id=""
-            placeholder="CPF"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
-          />
-          <input
-            type="text"
-            name=""
-            id=""
-            placeholder="password"
-            className="p-3 rounded-md w-full mb-4 bg-neutral-700 text-gray-300"
-          />
+        <form action="" className="flex flex-col">
+          <div className="rounded-md w-full mb-4 bg-neutral-700 flex items-center">
+            <input
+              type="text"
+              name=""
+              id=""
+              onChange={updateName}
+              value={`${user?.name}`}
+              placeholder="Name"
+              className="p-3 rounded-md w-full bg-neutral-700 text-neutral-100"
+            />
+          </div>
+          <div className="pr-3 rounded-md w-full mb-4 bg-neutral-700 flex items-center">
+            <input
+              type="text"
+              name=""
+              id=""
+              value={user.email}
+              readOnly
+              disabled
+              placeholder="youremail@email.com"
+              className="p-3 rounded-md w-full bg-neutral-700 text-neutral-400"
+            />
+            <FaLock className="text-neutral-400" />
+          </div>
+          <div className="pr-3 rounded-md w-full mb-4 bg-neutral-700 flex items-center">
+            <input
+              type="text"
+              name=""
+              id=""
+              placeholder="CPF"
+              className="p-3 rounded-md w-full bg-neutral-700 text-neutral-400"
+              disabled
+              value={user.cpf}
+              readOnly
+            />
+            <FaLock className="text-neutral-400" />
+          </div>
           <input
             type="submit"
             value={"update"}
