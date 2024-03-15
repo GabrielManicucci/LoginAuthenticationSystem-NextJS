@@ -36,15 +36,16 @@ export default function ProfileScreen({
   });
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    async function fetchUser() {
-      const userData = await getUserData();
-    }
-    fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     const userData = await getUserData();
+  //   }
+  //   fetchUser();
+  // }, []);
 
   async function getUserData() {
     const response: any = await getUser();
+    console.log(response.data);
     setUser(response.data);
   }
 
