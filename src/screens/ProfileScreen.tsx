@@ -7,6 +7,7 @@ import DialogComponentPassword, {
 } from "@/components/DialogComponentPassword";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaLock } from "react-icons/fa6";
+import { UserSchema as SignupUserSchema } from "./SignupScreen";
 
 export type User = {
   name: string;
@@ -21,12 +22,14 @@ type ProfileScreenProps = {
   updatePassword: (
     passwordForm: UpdatePasswordSchema
   ) => Promise<object | unknown>;
+  updateName: (emailForm: SignupUserSchema) => Promise<object | unknown>;
 };
 
 export default function ProfileScreen({
   getUser,
   updateEmail,
   updatePassword,
+  updateName,
 }: ProfileScreenProps) {
   const [user, setUser] = useState<User>({
     name: "",
@@ -35,19 +38,16 @@ export default function ProfileScreen({
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessageScreenProfile, setErrorMessageMessageScreenProfile] =
+    useState("");
 
-  // useEffect(() => {
-  //   async function fetchUser() {
-  //     const userData = await getUserData();
-  //   }
-  //   fetchUser();
-  // }, []);
-
-  async function getUserData() {
-    const response: any = await getUser();
-    console.log(response.data);
-    setUser(response.data);
-  }
+  useEffect(() => {
+    async function fetchUser() {
+      const response: any = await getUser();
+      setUser(response.data);
+    }
+    fetchUser();
+  }, []);
 
   const updateEmailHandle = async (emailForm: UpdateEmailSchema) => {
     const response: any = await updateEmail(emailForm);
@@ -77,13 +77,24 @@ export default function ProfileScreen({
     }
   };
 
-  function updateName(event: ChangeEvent<HTMLInputElement>) {
+  const handlesNameUpdate = async () => {
+    const response: any = await updateName(user);
+    if (response.data.error) {
+      console.log(response.data.error);
+      setErrorMessageMessageScreenProfile(response.data.error);
+    } else {
+      setUser(response.data);
+      location.reload();
+    }
+  };
+
+  function nameInputUpdate(event: ChangeEvent<HTMLInputElement>) {
+    setErrorMessageMessageScreenProfile("");
     const { value } = event.target;
     setUser((prevData) => ({
       ...prevData,
       name: value,
     }));
-    console.log(user);
   }
 
   function errorMessageHandler(data: string) {
@@ -113,13 +124,13 @@ export default function ProfileScreen({
             updatePasswordHandle={updatePasswordHandle}
           />
         </div>
-        <form action="" className="flex flex-col">
+        <form onSubmit={handlesNameUpdate} className="flex flex-col">
           <div className="rounded-md w-full mb-4 bg-neutral-700 flex items-center">
             <input
               type="text"
               name=""
               id=""
-              onChange={updateName}
+              onChange={nameInputUpdate}
               value={`${user?.name}`}
               placeholder="Name"
               className="p-3 rounded-md w-full bg-neutral-700 text-neutral-100"
@@ -156,6 +167,14 @@ export default function ProfileScreen({
             value={"update"}
             className="p-3 w-full borde rounded-md transition-all hover:brightness-75 bg-gray-300 text-gray-950"
           />
+          {errorMessageScreenProfile && (
+            <div
+              onClick={() => setErrorMessage("")}
+              className="p-2 mt-4 border rounded-md border-red-600 text-red-950 bg-red-400 text-sm"
+            >
+              <p>{errorMessageScreenProfile}</p>
+            </div>
+          )}
         </form>
       </div>
     </div>

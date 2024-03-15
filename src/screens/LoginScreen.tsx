@@ -27,7 +27,6 @@ export default function LoginScreen({ login, redirect_url }: Login) {
       const data = await login({ email, password });
 
       if (redirect_url) {
-        // router.replace(`${redirect_url}`);
         location.replace(`${redirect_url}`);
       } else {
         location.replace("/");

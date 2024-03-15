@@ -15,8 +15,8 @@ export default function SessionLayout({
       suppressHydrationWarning
       className="flex flex-col items-center justify-center py-24 w-full"
     >
-      <div>
-        <p className="pb-10">
+      <div className="mb-10">
+        <p className=" text-center">
           <Link
             className={clsx({
               "border-b-2 border-gray-400": pathname !== "/session/login",
@@ -35,6 +35,13 @@ export default function SessionLayout({
             Signup
           </Link>
         </p>
+        {pathname === "/session/login" ? (
+          <p className="text-sm pt-2 brightness-95">
+            First register your account
+          </p>
+        ) : (
+          ""
+        )}
       </div>
       {children}
     </div>

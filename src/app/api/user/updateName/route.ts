@@ -10,7 +10,7 @@ export async function PATCH(request: NextRequest) {
 
     try {
         const cookie = cookies().get('session')
-        const {data} = await api.patch('http://localhost:3333/updatePassword', userData, {headers: {"Authorization": `Bearer ${cookie?.value}`}})
+        const {data} = await api.patch('http://localhost:3333/updateUser', userData, {headers: {"Authorization": `Bearer ${cookie?.value}`}})
         return NextResponse.json(data)
     } catch (error) {
         const {response} = error as ErrorType 

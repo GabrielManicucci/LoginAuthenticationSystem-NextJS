@@ -37,7 +37,7 @@ export default function SignupScreen({ signup }: Signup) {
       const response = await signup({ name, cpf, email, password });
       console.log(response);
 
-      // location.replace("/session/login");
+      location.replace("/session/login");
     } catch (err: any) {
       const { response } = err as ErrorType;
       console.log(err);

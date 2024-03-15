@@ -2,6 +2,7 @@
 import { UpdateEmailSchema } from "@/components/DialogComponentEmail"
 import { UpdatePasswordSchema } from "@/components/DialogComponentPassword"
 import { api, axios } from "@/lib/axios"
+import { UserSchema } from "@/screens/SignupScreen"
 
 export const user = () => ({
     getUser: async () => {
@@ -12,12 +13,16 @@ export const user = () => ({
             return error
         }
     },
+    updateName: async (userData: UserSchema) => {
+       const dada = await axios.patch('/api/user/updateName', {userData})
+       return dada
+    },
     updateEmail: async ({newEmail, password}: UpdateEmailSchema) => {
         const userData = {
             email: newEmail,
             password
         }
-       const dada = await axios.post('/api/user/updateEmail', {userData})
+       const dada = await axios.patch('/api/user/updateEmail', {userData})
        return dada
     },
     updatePassword: async ({newPassword, password}: UpdatePasswordSchema) => {
@@ -25,7 +30,7 @@ export const user = () => ({
             newPassword,
             password
         }
-       const dada = await axios.post('/api/user/updatePassword', {userData})
+       const dada = await axios.patch('/api/user/updatePassword', {userData})
        return dada
     },
     
