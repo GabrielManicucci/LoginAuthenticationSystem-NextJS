@@ -33,6 +33,10 @@ export const user = () => ({
        const dada = await axios.patch('/api/user/updatePassword', {userData})
        return dada
     },
+    deleteUser: async () => {
+       const dada = await axios.delete('/api/user/deleteUser')
+       return dada
+    },
     
 })
 

@@ -3,7 +3,8 @@ import ProfileScreen from "@/screens/ProfileScreen";
 import { user } from "@/utils/user";
 
 export default function Profile() {
-  const { getUser, updateEmail, updatePassword, updateName } = user();
+  const { getUser, updateEmail, updatePassword, updateName, deleteUser } =
+    user();
 
   return (
     <ProfileScreen
@@ -11,6 +12,7 @@ export default function Profile() {
       updateEmail={updateEmail}
       updatePassword={updatePassword}
       updateName={updateName}
+      deleteUser={deleteUser}
     />
   );
 }

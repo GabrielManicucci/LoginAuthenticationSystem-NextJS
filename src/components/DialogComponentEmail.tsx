@@ -10,6 +10,7 @@ import {
 import { updateEmailSchema } from "@/schemas/updates";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { z } from "zod";
 
 export type UpdateEmailSchema = z.infer<typeof updateEmailSchema>;
@@ -19,18 +20,22 @@ export type Props = {
     emailForm: UpdateEmailSchema
   ) => Promise<object | unknown>;
   errorMessage: string;
+  successMessage: string;
   errorMessageHandle: (data: string) => void;
+  successMessageHandles: (data: string) => void;
 };
 
 export default function DialogComponentEmail({
   updateEmailHandle,
   errorMessage,
   errorMessageHandle,
+  successMessage,
+  successMessageHandles,
 }: Props) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<UpdateEmailSchema>({
     resolver: zodResolver(updateEmailSchema),
   });
@@ -38,7 +43,7 @@ export default function DialogComponentEmail({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="border border-gray-400 p-3 rounded-md hover:bg-gray-300 hover:border-gray-300 dark:hover:text-gray-950 transition-all text-sm">
+        <button className="border-2 border-gray-400 p-3 rounded-md hover:bg-gray-300 hover:border-gray-300 dark:hover:text-gray-950 transition-all text-sm">
           Update email
         </button>
       </DialogTrigger>
@@ -59,7 +64,10 @@ export default function DialogComponentEmail({
               placeholder="Enter your new email"
               className="col-span-3 p-3 rounded-md bg-neutral-700 text-gray-300 text-base"
               {...register("newEmail")}
-              onFocus={() => errorMessageHandle("")}
+              onFocus={() => {
+                errorMessageHandle("");
+                successMessageHandles("");
+              }}
             />
 
             {errors.newEmail && (
@@ -75,6 +83,10 @@ export default function DialogComponentEmail({
               placeholder="Enter your password"
               className="col-span-3 p-3 rounded-md bg-neutral-700 tex text-gray-300 text-base"
               {...register("password")}
+              onFocus={() => {
+                errorMessageHandle("");
+                successMessageHandles("");
+              }}
             />
 
             {errors.password && (
@@ -84,14 +96,28 @@ export default function DialogComponentEmail({
             )}
           </div>
 
-          <input
+          <button
             type="submit"
-            value={"Save changes"}
             className="border p-3 rounded-md transition-all hover:brightness-75 bg-gray-300 text-gray-950"
-          />
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="flex justify-center items-center">
+                Criando...{" "}
+                <AiOutlineLoading3Quarters className="animate-spin ml-3" />
+              </span>
+            ) : (
+              "Save Changes"
+            )}
+          </button>
+          {successMessage && (
+            <div className="p-2 mt-4 border-2 text-green-950 bg-green-400 text-sm rounded-md border-green-900 text-center">
+              {successMessage}
+            </div>
+          )}
 
           {errorMessage && (
-            <div className="p-2 mt-4 border rounded-mdborder-red-600 text-red-950 bg-red-400 text-sm rounded-md border-red-400 text-center">
+            <div className="p-2 mt-4 border-2 border-red-900 rounded-mdborder-red-600 text-red-950 bg-red-400 text-sm rounded-md text-center">
               {errorMessage}
             </div>
           )}

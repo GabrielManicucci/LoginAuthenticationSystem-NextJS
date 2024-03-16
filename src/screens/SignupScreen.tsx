@@ -1,5 +1,6 @@
 "use client";
 import { FcGoogle } from "react-icons/fc";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,7 +16,7 @@ export default function SignupScreen({ signup }: Signup) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<UserSchema>({
     resolver: zodResolver(signupSchema),
   });
@@ -113,11 +114,22 @@ export default function SignupScreen({ signup }: Signup) {
               )}
             </div>
 
-            <input
+            <button
               type="submit"
               value="Signup"
-              className="p-3 bg-gray-200 rounded-md mt-5 text-gray-950 font-medium"
-            />
+              className="p-3 bg-gray-200 rounded-md
+              mt-5 text-gray-950 font-medium"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span>
+                  Criando...{" "}
+                  <AiOutlineLoading3Quarters className="animate-spin" />
+                </span>
+              ) : (
+                "Signup"
+              )}
+            </button>
 
             {errorMessage && (
               <div

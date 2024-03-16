@@ -8,6 +8,7 @@ import DialogComponentPassword, {
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaLock } from "react-icons/fa6";
 import { UserSchema as SignupUserSchema } from "./SignupScreen";
+import DialogComponentDeleteUser from "@/components/DialogComponentDeleteUser";
 
 export type User = {
   name: string;
@@ -23,6 +24,7 @@ type ProfileScreenProps = {
     passwordForm: UpdatePasswordSchema
   ) => Promise<object | unknown>;
   updateName: (emailForm: SignupUserSchema) => Promise<object | unknown>;
+  deleteUser: () => Promise<object | unknown>;
 };
 
 export default function ProfileScreen({
@@ -30,6 +32,7 @@ export default function ProfileScreen({
   updateEmail,
   updatePassword,
   updateName,
+  deleteUser,
 }: ProfileScreenProps) {
   const [user, setUser] = useState<User>({
     name: "",
@@ -38,6 +41,7 @@ export default function ProfileScreen({
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [errorMessageScreenProfile, setErrorMessageMessageScreenProfile] =
     useState("");
 
@@ -59,7 +63,7 @@ export default function ProfileScreen({
         ...prevData,
         email,
       }));
-      location.reload();
+      setSuccessMessage("Updated email");
     }
   };
 
@@ -73,7 +77,7 @@ export default function ProfileScreen({
         ...prevData,
         email,
       }));
-      location.reload();
+      setSuccessMessage("Updated password");
     }
   };
 
@@ -82,6 +86,16 @@ export default function ProfileScreen({
     if (response.data.error) {
       console.log(response.data.error);
       setErrorMessageMessageScreenProfile(response.data.error);
+    } else {
+      setUser(response.data);
+    }
+  };
+
+  const handlesUserDelete = async () => {
+    const response: any = await deleteUser();
+    if (response.data.error) {
+      console.log(response.data.error);
+      setErrorMessage(response.data.error);
     } else {
       setUser(response.data);
       location.reload();
@@ -101,6 +115,10 @@ export default function ProfileScreen({
     setErrorMessage(data);
   }
 
+  function successMessageHandles(data: string) {
+    setSuccessMessage(data);
+  }
+
   return (
     <div className="flex flex-col items-center py-16 px-5">
       <div className="flex flex-col w-full sm:max-w-lg">
@@ -116,12 +134,16 @@ export default function ProfileScreen({
               updateEmailHandle={updateEmailHandle}
               errorMessage={errorMessage}
               errorMessageHandle={errorMessageHandler}
+              successMessage={successMessage}
+              successMessageHandles={successMessageHandles}
             />
           </div>
           <DialogComponentPassword
             errorMessageHandle={errorMessageHandler}
             errorMessage={errorMessage}
             updatePasswordHandle={updatePasswordHandle}
+            successMessage={successMessage}
+            successMessageHandles={successMessageHandles}
           />
         </div>
         <form onSubmit={handlesNameUpdate} className="flex flex-col">
@@ -162,11 +184,12 @@ export default function ProfileScreen({
             />
             <FaLock className="text-neutral-400" />
           </div>
-          <input
+          <button
             type="submit"
-            value={"update"}
             className="p-3 w-full borde rounded-md transition-all hover:brightness-75 bg-gray-300 text-gray-950"
-          />
+          >
+            Save changes
+          </button>
           {errorMessageScreenProfile && (
             <div
               onClick={() => setErrorMessage("")}
@@ -176,6 +199,13 @@ export default function ProfileScreen({
             </div>
           )}
         </form>
+        <div className="text-right">
+          <DialogComponentDeleteUser
+            handlesUserDelete={handlesUserDelete}
+            errorMessageHandle={errorMessageHandler}
+            errorMessage={errorMessage}
+          />
+        </div>
       </div>
     </div>
   );
